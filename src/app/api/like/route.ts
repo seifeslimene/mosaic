@@ -21,13 +21,14 @@ export async function POST(request: Request) {
     | "cry"
     | "surprise";
 
-  if (userId)
-    if (userlikestatus) {
-      await sql(
-        "DELETE FROM likes WHERE likes.postid = $1 AND likes.userid = $2",
-        [postid, userId],
-      );
-    }
+  if (!userId) return new Response("Unauthorized", { status: 401 });
+
+  if (userlikestatus) {
+    await sql(
+      "DELETE FROM likes WHERE likes.postid = $1 AND likes.userid = $2",
+      [postid, userId],
+    );
+  }
   if (type !== userlikestatus) {
     await sql("INSERT INTO likes (postid, userid, type) VALUES ($1, $2, $3)", [
       postid,

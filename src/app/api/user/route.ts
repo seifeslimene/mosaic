@@ -20,7 +20,9 @@ export async function GET(request: Request) {
     )[0] as User;
   }
 
-  return new Response(JSON.stringify(user));
+  return new Response(JSON.stringify(user ?? null), {
+    headers: { "content-type": "application/json" },
+  });
 }
 
 export async function POST(request: Request) {

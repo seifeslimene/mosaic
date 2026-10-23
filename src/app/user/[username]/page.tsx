@@ -12,19 +12,23 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const user = await (
-    await fetch(
+  let user: { name?: string; bio?: string } | null = null;
+  try {
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/user?username=${params.username}`,
-    )
-  ).json();
+    );
+    user = await res.json();
+  } catch {
+    user = null;
+  }
 
   return {
-    title: user.name ? `${user.name} – Mosaic` : "Mosaic",
+    title: user?.name ? `${user.name} – Mosaic` : "Mosaic",
     description:
       "Mosaic is a social media web app all about connecting with people who share your interests, and it's the perfect place to share your thoughts, photos, and videos.",
     metadataBase: new URL("https://mosaic.seifeddineslimene.com"),
     openGraph: {
-      description: user.bio
+      description: user?.bio
         ? user.bio
         : "Mosaic is a social media web app all about connecting with people who share your interests, and it's the perfect place to share your thoughts, photos, and videos.",
     },
